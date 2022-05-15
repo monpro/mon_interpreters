@@ -44,6 +44,24 @@ public class Scanner {
       case '<': addToken(match('=') ? TokenType.LESS_EQUAL : TokenType.LESS); break;
       case '>': addToken(match('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER); break;
 
+      case '/':
+        if (match('/')) {
+          while (peek() != '\n' && !isAtEnd()) advance();
+        } else {
+          addToken(TokenType.SLASH);
+        }
+        break;
+
+      case ' ':
+      case '\r':
+      case '\t':
+        // simply ignore whitespace
+        break;
+
+      case '\n':
+        // update line when encountering new line
+        line++;
+        break;
       default:
         Lox.error(line, "unexpected character .");
         break;
@@ -71,4 +89,9 @@ public class Scanner {
     return true;
   }
 
+  // we lookahead for characters, not adding the comment into token
+  private char peek() {
+    if (isAtEnd()) return '\0';
+    return source.charAt(current);
+  }
 }
