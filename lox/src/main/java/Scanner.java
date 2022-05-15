@@ -65,7 +65,11 @@ public class Scanner {
 
       case '"': string(); break;
       default:
-        Lox.error(line, "unexpected character .");
+        if (isDigit(c)) {
+          number();
+        } else {
+          Lox.error(line, "unexpected character .");
+        }
         break;
     }
   }
@@ -111,6 +115,26 @@ public class Scanner {
 
     final String value = source.substring(start + 1, current - 1);
     addToken(TokenType.STRING, value);
+  }
+
+  private boolean isDigit(char c) {
+    return c >= '0' && c <= '9';
+  }
+
+  private void number() {
+    while (isDigit(peek())) advance();
+    // only the char after . is digit, like 12.1, we continue scanning
+    if (peek() == '.' && isDigit(peekNext())) {
+      // jump over .
+      advance();
+      while (isDigit(peek())) advance();
+    }
+    addToken(TokenType.NUMBER, Double.parseDouble(source.substring(start, current)));
+  }
+
+  private char peekNext() {
+    if (current + 1 >= source.length()) return '\0';
+    return source.charAt(current + 1);
   }
 
 }
