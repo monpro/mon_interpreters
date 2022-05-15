@@ -8,6 +8,7 @@ import java.util.List;
 
 public class Lox {
 
+  private static boolean hasError = false;
   public static void main(String[] args) throws IOException {
     if (args.length > 1) {
       System.out.println("Usage: lox [script]");
@@ -22,6 +23,9 @@ public class Lox {
   private static void runFile(String path) throws IOException {
     final byte[] bytes = Files.readAllBytes(Paths.get(path));
     run(new String(bytes, Charset.defaultCharset()));
+    if (hasError) {
+      System.exit(65);
+    }
   }
 
   private static void runPrompt() throws IOException {
@@ -32,7 +36,8 @@ public class Lox {
       System.out.println(">  ");
       final String line = reader.readLine();
       if (line == null) break;
-      run(line);;
+      run(line);
+      hasError = false;
     }
   }
 
@@ -45,5 +50,14 @@ public class Lox {
     for (final Token token : tokens) {
       System.out.println(token);
     }
+  }
+
+  static void error(int line, String message) {
+    report(line, "", message);
+  }
+
+  private static void report(int line, String where, String message) {
+    System.err.println("[line " + line + "] Error" + where + ": " + message);
+    hasError = true;
   }
 }
