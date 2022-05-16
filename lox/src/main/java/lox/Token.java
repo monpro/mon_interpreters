@@ -1,3 +1,5 @@
+package lox;
+
 public class Token {
 
   private final TokenType type;
@@ -14,7 +16,7 @@ public class Token {
 
   @Override
   public String toString() {
-    return "Token{" +
+    return "lox.Token{" +
         "type=" + type +
         ", lexeme='" + lexeme + '\'' +
         ", literal=" + literal +
