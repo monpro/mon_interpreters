@@ -2,10 +2,10 @@ package lox;
 
 public class Token {
 
-  private final TokenType type;
-  private final String lexeme;
-  private final Object literal;
-  private final int line;
+  protected final TokenType type;
+  protected String lexeme;
+  protected final Object literal;
+  protected final int line;
 
   Token(TokenType type, String lexeme, Object literal, int line) {
     this.type = type;
