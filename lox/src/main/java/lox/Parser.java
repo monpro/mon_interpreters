@@ -12,6 +12,14 @@ public class Parser {
     this.tokens = tokens;
   }
 
+  public Expr parse() {
+    try {
+      return expression();
+    } catch (final ParseError error) {
+      return null;
+    }
+  }
+
   private Expr expression() {
     return equality();
   }
@@ -110,7 +118,7 @@ public class Parser {
       consume(RIGHT_PAREN, "Expect ) after expression.");
       return new Expr.Grouping(expr);
     }
-    throw new RuntimeException("Expect expression");
+    throw error(peek(), "Expect expression");
   }
 
   private Token consume(TokenType type, String message) {
