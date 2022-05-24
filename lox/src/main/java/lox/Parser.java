@@ -1,5 +1,6 @@
 package lox;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static lox.TokenType.*;
@@ -12,12 +13,30 @@ public class Parser {
     this.tokens = tokens;
   }
 
-  public Expr parse() {
-    try {
-      return expression();
-    } catch (final ParseError error) {
-      return null;
+  public List<Statement> parse() {
+    List<Statement> statements = new ArrayList<>();
+    while (!isAtEnd()) {
+      statements.add(statement());
     }
+    return statements;
+  }
+
+  private Statement statement() {
+    // TODO: fill in more statement types later
+    if (match(PRINT)) return printStateStatement();
+    else return expressionStatement();
+  }
+
+  private Statement printStateStatement() {
+    Expr value = expression();
+    consume(SEMICOLON, "Expect ';' after value.");
+    return new Statement.Print(value);
+  }
+
+  private Statement expressionStatement() {
+    Expr value = expression();
+    consume(SEMICOLON, "Expect ';' after expression.");
+    return new Statement.Expression(value);
   }
 
   private Expr expression() {
@@ -121,6 +140,13 @@ public class Parser {
     throw error(peek(), "Expect expression");
   }
 
+  /**
+   * if current type is matched with given type, advance().
+   * Otherwise throw error with current peek token and given message.
+   * @param type TokenType.
+   * @param message error message
+   * @return Token.
+   */
   private Token consume(TokenType type, String message) {
     if (check(type)) return advance();
     throw error(peek(), message);
