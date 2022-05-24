@@ -1,14 +1,21 @@
 package lox;
 
-public class Interpreter implements Expr.Visitor<Object>{
+import java.util.List;
 
-  public void interpret(Expr expr) {
+public class Interpreter implements Expr.Visitor<Object>, Statement.Visitor<Void>{
+
+  public void interpret(List<Statement> statements) {
     try {
-      Object value = evaluate(expr);
-      System.out.println(stringify(value));
+      for(Statement statement : statements) {
+        execute(statement);
+      }
     } catch (RunTimeError error) {
       Lox.runTimeError(error);
     }
+  }
+
+  private void execute(Statement statement) {
+    statement.accept(this);
   }
 
   private String stringify(Object object) {
@@ -100,6 +107,19 @@ public class Interpreter implements Expr.Visitor<Object>{
       default:
         break;
     }
+    return null;
+  }
+
+  @Override
+  public Void visitExpressionStatement(Statement.Expression statement) {
+    evaluate(statement.expression);
+    return null;
+  }
+
+  @Override
+  public Void visitPrintStatement(Statement.Print statement) {
+    Object value = evaluate(statement.expression);
+    System.out.println(stringify(value));
     return null;
   }
 

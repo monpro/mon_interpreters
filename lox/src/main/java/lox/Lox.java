@@ -54,10 +54,10 @@ public class Lox {
     final Scanner scanner = new Scanner(source);
     final List<Token> tokens = scanner.scanTokens();
     final Parser parser = new Parser(tokens);
-    final Expr expr = parser.parse();
+    final List<Statement> statements = parser.parse();
     // for now just print the tokens
     if (hasError) return;
-    interpreter.interpret(expr);
+    interpreter.interpret(statements);
   }
 
   static void error(int line, String message) {
