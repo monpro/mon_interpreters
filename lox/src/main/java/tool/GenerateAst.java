@@ -21,6 +21,11 @@ public class GenerateAst {
         "Unary    : Token operator, Expr right"
     ));
 
+    defineAst(outputDir, "Statement", Arrays.asList(
+        "Expression : Expr expression",
+        "Print      : Expr expression"
+    ));
+
   }
 
   /**
