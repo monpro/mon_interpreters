@@ -9,8 +9,10 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class Lox {
-
+  private static final Interpreter interpreter = new Interpreter();
   private static boolean hasError = false;
+  private static boolean hadRunTimeError = false;
+
   public static void main(String[] args) throws IOException {
     if (args.length > 1) {
       System.out.println("Usage: lox [script]");
@@ -27,6 +29,9 @@ public class Lox {
     run(new String(bytes, Charset.defaultCharset()));
     if (hasError) {
       System.exit(65);
+    }
+    if (hadRunTimeError) {
+      System.exit(70);
     }
   }
 
@@ -52,7 +57,7 @@ public class Lox {
     final Expr expr = parser.parse();
     // for now just print the tokens
     if (hasError) return;
-    System.out.println(new AstPrinter().print(expr));
+    interpreter.interpret(expr);
   }
 
   static void error(int line, String message) {
@@ -71,4 +76,8 @@ public class Lox {
     hasError = true;
   }
 
+  protected static void runTimeError(RunTimeError error) {
+    System.out.println(error.getMessage() + "\n[line " + error.token.line + "]");
+    hadRunTimeError = true;
+  }
 }

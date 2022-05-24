@@ -2,6 +2,27 @@ package lox;
 
 public class Interpreter implements Expr.Visitor<Object>{
 
+  public void interpret(Expr expr) {
+    try {
+      Object value = evaluate(expr);
+      System.out.println(stringify(value));
+    } catch (RunTimeError error) {
+      Lox.runTimeError(error);
+    }
+  }
+
+  private String stringify(Object object) {
+    if (object == null) return "nil";
+    if (object instanceof Double) {
+      String text = object.toString();
+      if (text.endsWith(".0")) {
+        text = text.substring(0, text.length() - 2);
+      }
+      return text;
+    }
+    return object.toString();
+  }
+
   @Override
   public Object visitBinaryExpr(Expr.Binary expr) {
     Object left = evaluate(expr.left);
