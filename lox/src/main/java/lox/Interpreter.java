@@ -8,10 +8,13 @@ public class Interpreter implements Expr.Visitor<Object>{
     Object right = evaluate(expr.right);
     switch (expr.operator.type) {
       case MINUS:
+        checkNumberOperand(expr.operator, left, right);
         return (double)left - (double) right;
       case SLASH:
+        checkNumberOperand(expr.operator, left, right);
         return (double)left / (double) right;
       case STAR:
+        checkNumberOperand(expr.operator, left, right);
         return (double)left * (double) right;
       case PLUS:
         if (left instanceof Double && right instanceof Double) {
@@ -20,14 +23,18 @@ public class Interpreter implements Expr.Visitor<Object>{
         if (left instanceof String && right instanceof String) {
           return left + (String)right;
         }
-        break;
+        throw new RunTimeError(expr.operator, "operands must be two numbers or two strings");
       case GREATER:
+        checkNumberOperand(expr.operator, left, right);
         return (double)left > (double)right;
       case GREATER_EQUAL:
+        checkNumberOperand(expr.operator, left, right);
         return (double)left >= (double) right;
       case LESS:
+        checkNumberOperand(expr.operator, left, right);
         return (double)left < (double) right;
       case LESS_EQUAL:
+        checkNumberOperand(expr.operator, left, right);
         return (double)left <= (double)right;
       case BANG_EQUAL:
         return !isEqual(left, right);
@@ -37,6 +44,16 @@ public class Interpreter implements Expr.Visitor<Object>{
         break;
     }
     return null;
+  }
+
+  private void checkNumberOperand(Token operator, Object leftOperand, Object rightOperand) {
+    if (leftOperand instanceof Double && rightOperand instanceof Double) return;
+    throw new RunTimeError(operator, "operands must be numbers");
+  }
+
+  private void checkNumberOperand(Token operator, Object operand) {
+    if (operand instanceof Double) return;
+    throw new RunTimeError(operator, "operand must be a number");
   }
 
   @Override
@@ -55,6 +72,7 @@ public class Interpreter implements Expr.Visitor<Object>{
     Object right = evaluate(expr.right);
     switch (expr.operator.type) {
       case MINUS:
+        checkNumberOperand(expr.operator, right);
         return -(double)right;
       case BANG:
         return !isTruthy(right);
@@ -86,6 +104,8 @@ public class Interpreter implements Expr.Visitor<Object>{
     if (object1 == null) return false;
     return object1.equals(object2);
   }
+
+
 
   private Object evaluate(Expr expr) {
     return expr.accept(this);
