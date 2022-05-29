@@ -118,7 +118,9 @@ public class Interpreter implements Expr.Visitor<Object>, Statement.Visitor<Void
 
   @Override
   public Object visitAssignExpr(Expr.Assign expr) {
-    return null;
+    Object value = evaluate(expr.value);
+    environment.assign(expr.name, value);
+    return value;
   }
 
   @Override
