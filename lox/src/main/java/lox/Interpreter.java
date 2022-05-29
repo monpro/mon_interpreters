@@ -117,6 +117,11 @@ public class Interpreter implements Expr.Visitor<Object>, Statement.Visitor<Void
   }
 
   @Override
+  public Object visitAssignExpr(Expr.Assign expr) {
+    return null;
+  }
+
+  @Override
   public Void visitExpressionStatement(Statement.Expression statement) {
     evaluate(statement.expression);
     return null;
