@@ -7,6 +7,7 @@ abstract class Statement {
     R visitExpressionStatement(Expression statement);
     R visitPrintStatement(Print statement);
     R visitVarStatement(Var statement);
+    R visitBlockStatement(Block statement);
   }
 
   static class Expression extends Statement {
@@ -45,6 +46,18 @@ abstract class Statement {
     }
   final Token name;
   final Expr initializer;
+  }
+
+  static class Block extends Statement {
+    Block(List<Statement> statements) {
+      this.statements = statements;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitBlockStatement(this);
+    }
+  final List<Statement> statements;
   }
 
 

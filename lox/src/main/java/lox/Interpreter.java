@@ -146,6 +146,27 @@ public class Interpreter implements Expr.Visitor<Object>, Statement.Visitor<Void
     return null;
   }
 
+  @Override
+  public Void visitBlockStatement(Statement.Block statement) {
+    // create a new environment for the block scope
+    executeBlock(statement.statements, new Environment(environment));
+    return null;
+  }
+
+  private void executeBlock(List<Statement> statements, Environment environment) {
+    // we need to mutate env to current block one
+    Environment previous = this.environment;
+    try {
+      this.environment = environment;
+      for (Statement statement : statements) {
+        execute(statement);
+      }
+    } finally {
+      // we need to restore it back to global one
+      this.environment = previous;
+    }
+  }
+
   /**
    * return false if the object is null or false
    * @param object Object.
