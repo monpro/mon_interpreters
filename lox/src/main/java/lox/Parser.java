@@ -45,7 +45,7 @@ public class Parser {
   private Statement statement() {
     // TODO: fill in more statement types later
     if (match(PRINT)) return printStateStatement();
-    if (match(LEFT_PAREN)) return new Statement.Block(block());
+    if (match(LEFT_BRACE)) return new Statement.Block(block());
     else return expressionStatement();
   }
 
@@ -82,10 +82,10 @@ public class Parser {
 
   private List<Statement> block() {
     List<Statement> statements = new ArrayList<>();
-    while (!check(RIGHT_PAREN) && !isAtEnd()) {
+    while (!check(RIGHT_BRACE) && !isAtEnd()) {
       statements.add(declaration());
     }
-    consume(RIGHT_PAREN, "Expect '}' after block.");
+    consume(RIGHT_BRACE, "Expect '}' after block.");
     return statements;
   }
 
