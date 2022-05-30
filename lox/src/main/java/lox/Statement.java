@@ -8,6 +8,7 @@ abstract class Statement {
     R visitPrintStatement(Print statement);
     R visitVarStatement(Var statement);
     R visitBlockStatement(Block statement);
+    R visitIfStatement(If statement);
   }
 
   static class Expression extends Statement {
@@ -58,6 +59,22 @@ abstract class Statement {
       return visitor.visitBlockStatement(this);
     }
   final List<Statement> statements;
+  }
+
+  static class If extends Statement {
+    If(Expr condition, Statement thenBranch, Statement elseBranch) {
+      this.condition = condition;
+      this.thenBranch = thenBranch;
+      this.elseBranch = elseBranch;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitIfStatement(this);
+    }
+  final Expr condition;
+  final Statement thenBranch;
+  final Statement elseBranch;
   }
 
 

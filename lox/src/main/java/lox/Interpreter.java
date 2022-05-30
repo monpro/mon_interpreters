@@ -153,6 +153,16 @@ public class Interpreter implements Expr.Visitor<Object>, Statement.Visitor<Void
     return null;
   }
 
+  @Override
+  public Void visitIfStatement(Statement.If statement) {
+    if (isTruthy(evaluate(statement.condition))) {
+      execute(statement.thenBranch);
+    } else if (statement.elseBranch != null) {
+      execute(statement.elseBranch);
+    }
+    return null;
+  }
+
   private void executeBlock(List<Statement> statements, Environment environment) {
     // we need to mutate env to current block one
     Environment previous = this.environment;

@@ -1,5 +1,6 @@
 package lox;
 
+import javax.swing.plaf.nimbus.State;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +45,7 @@ public class Parser {
 
   private Statement statement() {
     // TODO: fill in more statement types later
+    if (match(IF)) return ifStatement();
     if (match(PRINT)) return printStateStatement();
     if (match(LEFT_BRACE)) return new Statement.Block(block());
     else return expressionStatement();
@@ -67,6 +69,19 @@ public class Parser {
       advance();
     }
   }
+
+  private Statement ifStatement() {
+    consume(LEFT_PAREN, "Expect '(' after 'if'.");
+    Expr condition = expression();
+    consume(RIGHT_PAREN, "Expect ')' after if condition.");
+    Statement thenBranch = statement();
+    Statement elseBranch = null;
+    if (match(ELSE)) {
+      elseBranch = statement();
+    }
+    return new Statement.If(condition, thenBranch, elseBranch);
+  }
+
 
   private Statement printStateStatement() {
     Expr value = expression();
