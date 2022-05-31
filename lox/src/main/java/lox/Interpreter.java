@@ -178,6 +178,11 @@ public class Interpreter implements Expr.Visitor<Object>, Statement.Visitor<Void
     return null;
   }
 
+  @Override
+  public Void visitWhileStatement(Statement.While statement) {
+    return null;
+  }
+
   private void executeBlock(List<Statement> statements, Environment environment) {
     // we need to mutate env to current block one
     Environment previous = this.environment;
