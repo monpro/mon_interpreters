@@ -16,6 +16,7 @@ public class GenerateAst {
     System.out.println(outputDir);
     defineAst(outputDir, "Expr", Arrays.asList(
         "Binary   : Expr left, Token operator, Expr right",
+        "Call     : Expr callee, Token paren, List<Expr> arguments",
         "Grouping : Expr expression",
         "Literal  : Object value",
         "Unary    : Token operator, Expr right",
