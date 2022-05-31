@@ -45,6 +45,7 @@ public class Parser {
 
   private Statement statement() {
     // TODO: fill in more statement types later
+    if (match(WHILE)) return whileStatement();
     if (match(IF)) return ifStatement();
     if (match(PRINT)) return printStateStatement();
     if (match(LEFT_BRACE)) return new Statement.Block(block());
@@ -68,6 +69,16 @@ public class Parser {
       }
       advance();
     }
+  }
+
+
+  private Statement whileStatement() {
+    consume(LEFT_PAREN, "Expect '(' after 'while'.");
+    Expr condition = expression();
+    consume(RIGHT_PAREN, "Expect ')' after condition.");
+    Statement body = statement();
+
+    return new Statement.While(condition, body);
   }
 
   private Statement ifStatement() {

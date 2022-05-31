@@ -180,6 +180,9 @@ public class Interpreter implements Expr.Visitor<Object>, Statement.Visitor<Void
 
   @Override
   public Void visitWhileStatement(Statement.While statement) {
+    while (isTruthy(evaluate(statement.condition))) {
+      execute(statement.body);
+    }
     return null;
   }
 
