@@ -103,7 +103,9 @@ public class Interpreter implements Expr.Visitor<Object>, Statement.Visitor<Void
     Object callee = evaluate(expr.callee);
 
     List<Object> arguments = new ArrayList<>();
-    arguments.addAll(expr.arguments);
+    for (Expr argument : expr.arguments) {
+      arguments.add(evaluate(argument));
+    }
     if (!(callee instanceof LoxCallable)) {
       throw new RunTimeError(expr.paren, "you can only call functions and classes.");
     }
@@ -189,6 +191,8 @@ public class Interpreter implements Expr.Visitor<Object>, Statement.Visitor<Void
 
   @Override
   public Void visitFunctionStatement(Statement.Function statement) {
+    LoxFunction function = new LoxFunction(statement);
+    environment.define(statement.name.lexeme, function);
     return null;
   }
 
