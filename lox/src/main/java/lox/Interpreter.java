@@ -83,8 +83,18 @@ public class Interpreter implements Expr.Visitor<Object>, Statement.Visitor<Void
 
     List<Object> arguments = new ArrayList<>();
     arguments.addAll(expr.arguments);
+    if (!(callee instanceof LoxCallable)) {
+      throw new RunTimeError(expr.paren, "you can only call functions and classes.");
+    }
     LoxCallable function = (LoxCallable) callee;
-    return function.call(this, arguments);
+    if (arguments.size() != function.arity()) {
+      throw new RunTimeError(expr.paren, "Expected " +
+          function.arity() +
+          " arguments but got " +
+          arguments.size() + ".");
+    }
+
+      return function.call(this, arguments);
   }
 
   private void checkNumberOperand(Token operator, Object leftOperand, Object rightOperand) {
