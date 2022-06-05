@@ -188,6 +188,11 @@ public class Interpreter implements Expr.Visitor<Object>, Statement.Visitor<Void
   }
 
   @Override
+  public Void visitFunctionStatement(Statement.Function statement) {
+    return null;
+  }
+
+  @Override
   public Void visitPrintStatement(Statement.Print statement) {
     Object value = evaluate(statement.expression);
     System.out.println(stringify(value));

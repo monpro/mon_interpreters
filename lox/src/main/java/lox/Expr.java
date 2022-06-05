@@ -30,11 +30,6 @@ abstract class Expr {
   final Expr right;
   }
 
-  /**
-   * callee: expression going to be called as function, e.g. A -> A()
-   * paren: the right paren of the callee being called, to record the line num
-   * arguments: the arguments as a list going to be passed into function.
-   */
   static class Call extends Expr {
     Call(Expr callee, Token paren, List<Expr> arguments) {
       this.callee = callee;
