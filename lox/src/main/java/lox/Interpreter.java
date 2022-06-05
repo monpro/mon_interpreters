@@ -1,5 +1,6 @@
 package lox;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Interpreter implements Expr.Visitor<Object>, Statement.Visitor<Void>{
@@ -77,7 +78,13 @@ public class Interpreter implements Expr.Visitor<Object>, Statement.Visitor<Void
 
   @Override
   public Object visitCallExpr(Expr.Call expr) {
-    return null;
+    // look up the function by evaluating callee
+    Object callee = evaluate(expr.callee);
+
+    List<Object> arguments = new ArrayList<>();
+    arguments.addAll(expr.arguments);
+    LoxCallable function = (LoxCallable) callee;
+    return function.call(this, arguments);
   }
 
   private void checkNumberOperand(Token operator, Object leftOperand, Object rightOperand) {
