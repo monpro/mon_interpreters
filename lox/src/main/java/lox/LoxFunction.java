@@ -10,16 +10,19 @@ import java.util.List;
 public class LoxFunction implements LoxCallable {
 
   private final Statement.Function declaration;
+  // Store the function when it's declared instead of its being called.
+  private final Environment closure;
 
-  public LoxFunction(Statement.Function declaration) {
+  public LoxFunction(Statement.Function declaration, Environment closure) {
     this.declaration = declaration;
+    this.closure = closure;
   }
 
   @Override
   public Object call(Interpreter interpreter, List<Object> arguments) {
     // we need to make sure every function called will have its own environment
     // think about recursion.
-    Environment environment = new Environment(interpreter.global);
+    Environment environment = new Environment(closure);
     for (int i = 0; i < declaration.params.size(); i++) {
       environment.define(declaration.params.get(i).lexeme, arguments.get(i));
     }

@@ -191,7 +191,7 @@ public class Interpreter implements Expr.Visitor<Object>, Statement.Visitor<Void
 
   @Override
   public Void visitFunctionStatement(Statement.Function statement) {
-    LoxFunction function = new LoxFunction(statement);
+    LoxFunction function = new LoxFunction(statement, environment);
     environment.define(statement.name.lexeme, function);
     return null;
   }
