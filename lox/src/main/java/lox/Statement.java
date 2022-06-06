@@ -11,6 +11,7 @@ abstract class Statement {
     R visitBlockStatement(Block statement);
     R visitIfStatement(If statement);
     R visitWhileStatement(While statement);
+    R visitReturnStatement(Return statement);
   }
 
   static class Expression extends Statement {
@@ -107,6 +108,20 @@ abstract class Statement {
     }
   final Expr condition;
   final Statement body;
+  }
+
+  static class Return extends Statement {
+    Return(Token keyword, Expr value) {
+      this.keyword = keyword;
+      this.value = value;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitReturnStatement(this);
+    }
+  final Token keyword;
+  final Expr value;
   }
 
 

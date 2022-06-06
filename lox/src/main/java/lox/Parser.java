@@ -71,6 +71,7 @@ public class Parser {
     if (match(FOR)) return forStatement();
     if (match(IF)) return ifStatement();
     if (match(PRINT)) return printStateStatement();
+    if (match(RETURN)) return returnStatement();
     if (match(LEFT_BRACE)) return new Statement.Block(block());
     else return expressionStatement();
   }
@@ -171,6 +172,17 @@ public class Parser {
     Expr value = expression();
     consume(SEMICOLON, "Expect ';' after value.");
     return new Statement.Print(value);
+  }
+
+
+  private Statement returnStatement() {
+    Token keyword = previous();
+    Expr value = null;
+    if (!check(SEMICOLON))  {
+      value = expression();
+    }
+    consume(SEMICOLON, "Expect ';' after return value.");
+    return new Statement.Return(keyword, value);
   }
 
   private Statement expressionStatement() {
