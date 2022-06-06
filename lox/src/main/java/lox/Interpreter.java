@@ -240,7 +240,9 @@ public class Interpreter implements Expr.Visitor<Object>, Statement.Visitor<Void
 
   @Override
   public Void visitReturnStatement(Statement.Return statement) {
-    return null;
+    Object value = null;
+    if (statement.value != null) value = evaluate(statement.value);
+    throw new Return(value);
   }
 
   protected void executeBlock(List<Statement> statements, Environment environment) {
