@@ -91,9 +91,33 @@ public class Resolver implements Expr.Visitor<Void>, Statement.Visitor<Void> {
     return null;
   }
 
+  /**
+   * For var statement, we split into three steps.
+   *  1.declare - var a;
+   *  2.resolve - resolving bindings;
+   *  3.define - a = a;
+   * @param statement Statement.Var
+   * @return Void.
+   */
   @Override
   public Void visitVarStatement(Statement.Var statement) {
+    declare(statement.name);
+    if (statement.initializer != null) {
+      resolve(statement.initializer);
+    }
+    define(statement.name);
     return null;
+  }
+
+  private void declare(Token name) {
+    if (scopes.isEmpty()) return;
+    Map<String, Boolean> scope = scopes.peek();
+    scope.put(name.lexeme, false);
+  }
+
+  private void define(Token name) {
+    if (scopes.isEmpty()) return;
+    scopes.peek().put(name.lexeme, true);
   }
 
   @Override
