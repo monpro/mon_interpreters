@@ -287,4 +287,8 @@ public class Interpreter implements Expr.Visitor<Object>, Statement.Visitor<Void
   private Object evaluate(Expr expr) {
     return expr.accept(this);
   }
+
+  // TODO: implement resolve logic
+  public void resolve(Expr expr, int i) {
+  }
 }

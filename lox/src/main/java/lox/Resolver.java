@@ -63,11 +63,31 @@ public class Resolver implements Expr.Visitor<Void>, Statement.Visitor<Void> {
 
   @Override
   public Void visitVariableExpr(Expr.Variable expr) {
+    // means the variable has not been defined
+    if (!scopes.isEmpty() && scopes.peek().get(expr.name.lexeme) == Boolean.FALSE) {
+      Lox.error(expr.name, "Can't read local variable in its own initializer.");
+    }
+    resolveLocal(expr, expr.name);
     return null;
+  }
+
+  private void resolveLocal(Expr expr, Token name) {
+    for (int i = scopes.size() - 1; i >= 0; i--) {
+      if (scopes.get(i).containsKey(name.lexeme)) {
+        // we walk from the innermost scope to global
+        // if we find the variable, we resolve it and pass in the number
+        // of scopes between the current innermost scope and the scope
+        // where the variable is found.
+        interpreter.resolve(expr, scopes.size() - 1 - i);
+        return;
+      }
+    }
   }
 
   @Override
   public Void visitAssignExpr(Expr.Assign expr) {
+    resolve(expr.value);
+    resolveLocal(expr, expr.name);
     return null;
   }
 
@@ -112,11 +132,13 @@ public class Resolver implements Expr.Visitor<Void>, Statement.Visitor<Void> {
   private void declare(Token name) {
     if (scopes.isEmpty()) return;
     Map<String, Boolean> scope = scopes.peek();
+    // false means the variable has not been defined.
     scope.put(name.lexeme, false);
   }
 
   private void define(Token name) {
     if (scopes.isEmpty()) return;
+    // true means the variable has been defined.
     scopes.peek().put(name.lexeme, true);
   }
 
