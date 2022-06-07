@@ -103,7 +103,20 @@ public class Resolver implements Expr.Visitor<Void>, Statement.Visitor<Void> {
 
   @Override
   public Void visitFunctionStatement(Statement.Function statement) {
+    declare(statement.name);
+    declare(statement.name);
+    resolveFunction(statement);
     return null;
+  }
+
+  private void resolveFunction(Statement.Function statement) {
+    beginScope();
+    for (Token param : statement.params) {
+      declare(param);
+      define(param);
+    }
+    resolve(statement.body);
+    endScope();
   }
 
   @Override
