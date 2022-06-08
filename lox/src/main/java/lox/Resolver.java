@@ -98,6 +98,7 @@ public class Resolver implements Expr.Visitor<Void>, Statement.Visitor<Void> {
 
   @Override
   public Void visitExpressionStatement(Statement.Expression statement) {
+    resolve(statement.expression);
     return null;
   }
 
@@ -121,6 +122,7 @@ public class Resolver implements Expr.Visitor<Void>, Statement.Visitor<Void> {
 
   @Override
   public Void visitPrintStatement(Statement.Print statement) {
+    resolve(statement.expression);
     return null;
   }
 
@@ -165,16 +167,26 @@ public class Resolver implements Expr.Visitor<Void>, Statement.Visitor<Void> {
 
   @Override
   public Void visitIfStatement(Statement.If statement) {
+    resolve(statement.condition);
+    resolve(statement.thenBranch);
+    if (statement.elseBranch != null) {
+      resolve(statement.elseBranch);
+    }
     return null;
   }
 
   @Override
   public Void visitWhileStatement(Statement.While statement) {
+    resolve(statement.condition);
+    resolve(statement.body);
     return null;
   }
 
   @Override
   public Void visitReturnStatement(Statement.Return statement) {
+    if (statement.value != null) {
+      resolve(statement.value);
+    }
     return null;
   }
 }
