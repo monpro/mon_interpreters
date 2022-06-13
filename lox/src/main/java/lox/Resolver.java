@@ -9,6 +9,7 @@ public class Resolver implements Expr.Visitor<Void>, Statement.Visitor<Void> {
 
   private final Interpreter interpreter;
   private final Stack<Map<String, Boolean>> scopes = new Stack<>();
+  private FunctionType currentFunctionType = FunctionType.NONE;
 
   public Resolver(Interpreter interpreter) {
     this.interpreter = interpreter;
@@ -116,11 +117,13 @@ public class Resolver implements Expr.Visitor<Void>, Statement.Visitor<Void> {
   public Void visitFunctionStatement(Statement.Function statement) {
     declare(statement.name);
     declare(statement.name);
-    resolveFunction(statement);
+    resolveFunction(statement, FunctionType.FUNCTION);
     return null;
   }
 
-  private void resolveFunction(Statement.Function statement) {
+  private void resolveFunction(Statement.Function statement, FunctionType functionType) {
+    FunctionType enclosingFunctionType = currentFunctionType;
+    currentFunctionType = functionType;
     beginScope();
     for (Token param : statement.params) {
       declare(param);
@@ -128,6 +131,7 @@ public class Resolver implements Expr.Visitor<Void>, Statement.Visitor<Void> {
     }
     resolve(statement.body);
     endScope();
+    currentFunctionType = enclosingFunctionType;
   }
 
   @Override
@@ -157,6 +161,9 @@ public class Resolver implements Expr.Visitor<Void>, Statement.Visitor<Void> {
   private void declare(Token name) {
     if (scopes.isEmpty()) return;
     Map<String, Boolean> scope = scopes.peek();
+    if (scope.containsKey(name.lexeme)) {
+      Lox.error(name, "Already a variable with same name in the scope");
+    }
     // false means the variable has not been defined.
     scope.put(name.lexeme, false);
   }
@@ -194,6 +201,9 @@ public class Resolver implements Expr.Visitor<Void>, Statement.Visitor<Void> {
 
   @Override
   public Void visitReturnStatement(Statement.Return statement) {
+    if (currentFunctionType == FunctionType.NONE) {
+      Lox.error(statement.keyword, "Cannot return from top-level");
+    }
     if (statement.value != null) {
       resolve(statement.value);
     }

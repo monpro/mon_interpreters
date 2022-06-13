@@ -12,6 +12,7 @@ public class Lox {
   private static final Interpreter interpreter = new Interpreter();
   private static boolean hasError = false;
   private static boolean hadRunTimeError = false;
+  private static boolean hadResolverError = false;
 
   public static void main(String[] args) throws IOException {
     if (args.length > 1) {
@@ -60,6 +61,8 @@ public class Lox {
     if (hasError) return;
     // first do static analysis of statements
     resolver.resolve(statements);
+    // if had resolver logic, do not interpret statements
+    if (hadResolverError) return;
     // then interpret statements
     interpreter.interpret(statements);
   }
