@@ -53,4 +53,8 @@ public class Environment {
     }
     return environment;
   }
+
+  public void assignAt(Integer distance, Token name, Object value) {
+    ancestor(distance).values.put(name.lexeme, value);
+  }
 }

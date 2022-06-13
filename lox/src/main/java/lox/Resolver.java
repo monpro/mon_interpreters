@@ -14,7 +14,7 @@ public class Resolver implements Expr.Visitor<Void>, Statement.Visitor<Void> {
     this.interpreter = interpreter;
   }
 
-  private void resolve(List<Statement> statements) {
+  protected void resolve(List<Statement> statements) {
     for(Statement statement : statements) {
       resolve(statement);
     }
