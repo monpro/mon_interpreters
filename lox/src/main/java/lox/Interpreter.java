@@ -1,12 +1,15 @@
 package lox;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Interpreter implements Expr.Visitor<Object>, Statement.Visitor<Void>{
 
-  final Environment global = new Environment();
+  private final Environment global = new Environment();
   private Environment environment = global;
+  private final Map<Expr, Integer> locals = new HashMap<>();
 
   public Interpreter() {
     global.define("clock", new LoxCallable() {
@@ -39,6 +42,10 @@ public class Interpreter implements Expr.Visitor<Object>, Statement.Visitor<Void
 
   private void execute(Statement statement) {
     statement.accept(this);
+  }
+
+   void resolve(Expr expr, int depth) {
+    locals.put(expr, depth);
   }
 
   private String stringify(Object object) {
@@ -158,7 +165,16 @@ public class Interpreter implements Expr.Visitor<Object>, Statement.Visitor<Void
 
   @Override
   public Object visitVariableExpr(Expr.Variable expr) {
-    return environment.get(expr.name);
+    return lookUpVariable(expr.name, expr);
+  }
+
+  private Object lookUpVariable(Token name, Expr.Variable expr) {
+    Integer distance = locals.get(expr);
+    if (distance != null) {
+      return environment.getAt(distance, name.lexeme);
+    } else {
+      return global.get(name);
+    }
   }
 
   @Override
@@ -288,7 +304,4 @@ public class Interpreter implements Expr.Visitor<Object>, Statement.Visitor<Void
     return expr.accept(this);
   }
 
-  // TODO: implement resolve logic
-  public void resolve(Expr expr, int i) {
-  }
 }
