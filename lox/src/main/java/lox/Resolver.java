@@ -61,6 +61,8 @@ public class Resolver implements Expr.Visitor<Void>, Statement.Visitor<Void> {
 
   @Override
   public Void visitSetExpr(Expr.Set expr) {
+    resolve(expr.value);
+    resolve(expr.object);
     return null;
   }
 

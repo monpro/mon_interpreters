@@ -138,7 +138,14 @@ public class Interpreter implements Expr.Visitor<Object>, Statement.Visitor<Void
 
   @Override
   public Object visitSetExpr(Expr.Set expr) {
-    return null;
+    Object object = evaluate(expr.object);
+    if (!(object instanceof LoxInstance)) {
+      throw new RunTimeError(expr.name, "only instances have fields.");
+    } else {
+      Object value = evaluate(expr.value);
+      ((LoxInstance)object).set(expr.name, value);
+      return value;
+    }
   }
 
   private void checkNumberOperand(Token operator, Object leftOperand, Object rightOperand) {
