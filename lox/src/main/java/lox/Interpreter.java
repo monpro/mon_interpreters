@@ -243,6 +243,9 @@ public class Interpreter implements Expr.Visitor<Object>, Statement.Visitor<Void
 
   @Override
   public Void visitClassStatement(Statement.Class statement) {
+    environment.define(statement.name.lexeme, null);
+    LoxClass loxClass = new LoxClass(statement.name.lexeme);
+    environment.assign(statement.name, loxClass);
     return null;
   }
 

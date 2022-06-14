@@ -184,6 +184,8 @@ public class Resolver implements Expr.Visitor<Void>, Statement.Visitor<Void> {
 
   @Override
   public Void visitClassStatement(Statement.Class statement) {
+    declare(statement.name);
+    define(statement.name);
     return null;
   }
 

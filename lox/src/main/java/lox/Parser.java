@@ -24,6 +24,7 @@ public class Parser {
 
   private Statement declaration() {
     try {
+      if (match(CLASS)) return classDeclaration();
       if (match(FUN)) return function("function");
       if (match(VAR)) return varDeclaration();
       else return statement();
@@ -33,9 +34,18 @@ public class Parser {
     }
   }
 
-  // function rule, will be reused later for classes method
-  // currently only have function type
-  private Statement function(String type) {
+  private Statement classDeclaration() {
+    Token name = consume(IDENTIFIER, "Expect class name");
+    consume(LEFT_BRACE, "Expect '{' before class body.");
+    List<Statement.Function> methods = new ArrayList<>();
+    while (!check(RIGHT_BRACE) && !isAtEnd()) {
+      methods.add(function("method"));
+    }
+    consume(RIGHT_BRACE, "Expect '}' after class body");
+    return new Statement.Class(name, methods);
+  }
+
+  private Statement.Function function(String type) {
     Token name = consume(IDENTIFIER, "Expect " + type + " name");
     consume(LEFT_PAREN, "Expect '(' after " + type + " name.");
     List<Token> parameters = new ArrayList<>();
