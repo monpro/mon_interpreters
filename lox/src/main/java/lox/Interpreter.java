@@ -129,7 +129,11 @@ public class Interpreter implements Expr.Visitor<Object>, Statement.Visitor<Void
 
   @Override
   public Object visitGetExpr(Expr.Get expr) {
-    return null;
+    Object object = evaluate(expr.object);
+    if (object instanceof LoxInstance) {
+      return ((LoxInstance) object).get(expr.name);
+    }
+    throw new RunTimeError(expr.name, "only instances have properties");
   }
 
   private void checkNumberOperand(Token operator, Object leftOperand, Object rightOperand) {

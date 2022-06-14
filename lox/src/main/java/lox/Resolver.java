@@ -55,6 +55,7 @@ public class Resolver implements Expr.Visitor<Void>, Statement.Visitor<Void> {
 
   @Override
   public Void visitGetExpr(Expr.Get expr) {
+    resolve(expr.object);
     return null;
   }
 
