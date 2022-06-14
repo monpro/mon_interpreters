@@ -54,6 +54,11 @@ public class Resolver implements Expr.Visitor<Void>, Statement.Visitor<Void> {
   }
 
   @Override
+  public Void visitGetExpr(Expr.Get expr) {
+    return null;
+  }
+
+  @Override
   public Void visitGroupingExpr(Expr.Grouping expr) {
     resolve(expr.expression);
     return null;
