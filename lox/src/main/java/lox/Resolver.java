@@ -183,6 +183,11 @@ public class Resolver implements Expr.Visitor<Void>, Statement.Visitor<Void> {
   }
 
   @Override
+  public Void visitClassStatement(Statement.Class statement) {
+    return null;
+  }
+
+  @Override
   public Void visitIfStatement(Statement.If statement) {
     resolve(statement.condition);
     resolve(statement.thenBranch);

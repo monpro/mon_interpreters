@@ -31,6 +31,7 @@ public class GenerateAst {
         "Print      : Expr expression",
         "Var        : Token name, Expr initializer",
         "Block      : List<Statement> statements",
+        "Class      : Token name, List<Statement.Function> methods",
         "If         : Expr condition, Statement thenBranch, Statement elseBranch",
         "While      : Expr condition, Statement body",
         "Return     : Token keyword, Expr value"

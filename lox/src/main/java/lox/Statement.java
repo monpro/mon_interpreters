@@ -9,6 +9,7 @@ abstract class Statement {
     R visitPrintStatement(Print statement);
     R visitVarStatement(Var statement);
     R visitBlockStatement(Block statement);
+    R visitClassStatement(Class statement);
     R visitIfStatement(If statement);
     R visitWhileStatement(While statement);
     R visitReturnStatement(Return statement);
@@ -78,6 +79,20 @@ abstract class Statement {
       return visitor.visitBlockStatement(this);
     }
   final List<Statement> statements;
+  }
+
+  static class Class extends Statement {
+    Class(Token name, List<Statement.Function> methods) {
+      this.name = name;
+      this.methods = methods;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitClassStatement(this);
+    }
+  final Token name;
+  final List<Statement.Function> methods;
   }
 
   static class If extends Statement {

@@ -242,6 +242,11 @@ public class Interpreter implements Expr.Visitor<Object>, Statement.Visitor<Void
   }
 
   @Override
+  public Void visitClassStatement(Statement.Class statement) {
+    return null;
+  }
+
+  @Override
   public Void visitIfStatement(Statement.If statement) {
     if (isTruthy(evaluate(statement.condition))) {
       execute(statement.thenBranch);
