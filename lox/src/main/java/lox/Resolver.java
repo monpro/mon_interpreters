@@ -8,6 +8,8 @@ import java.util.Stack;
 public class Resolver implements Expr.Visitor<Void>, Statement.Visitor<Void> {
 
   private final Interpreter interpreter;
+  // [{this: true}, {abc: false}], it means this is defined within the scope while
+  // the abc is not defined
   private final Stack<Map<String, Boolean>> scopes = new Stack<>();
   private FunctionType currentFunctionType = FunctionType.NONE;
 
@@ -68,6 +70,7 @@ public class Resolver implements Expr.Visitor<Void>, Statement.Visitor<Void> {
 
   @Override
   public Void visitThisExpr(Expr.This expr) {
+    resolveLocal(expr, expr.keyword);
     return null;
   }
 
@@ -204,10 +207,13 @@ public class Resolver implements Expr.Visitor<Void>, Statement.Visitor<Void> {
   public Void visitClassStatement(Statement.Class statement) {
     declare(statement.name);
     define(statement.name);
+    beginScope();
+    scopes.peek().put("this", true);
     for (Statement.Function method : statement.methods) {
       FunctionType functionType = FunctionType.METHOD;
       resolveFunction(method, functionType);
     }
+    endScope();
     return null;
   }
 

@@ -151,7 +151,7 @@ public class Interpreter implements Expr.Visitor<Object>, Statement.Visitor<Void
 
   @Override
   public Object visitThisExpr(Expr.This expr) {
-    return null;
+    return lookUpVariable(expr.keyword, expr);
   }
 
   private void checkNumberOperand(Token operator, Object leftOperand, Object rightOperand) {
@@ -195,7 +195,7 @@ public class Interpreter implements Expr.Visitor<Object>, Statement.Visitor<Void
     return lookUpVariable(expr.name, expr);
   }
 
-  private Object lookUpVariable(Token name, Expr.Variable expr) {
+  private Object lookUpVariable(Token name, Expr expr) {
     Integer distance = locals.get(expr);
     if (distance != null) {
       return environment.getAt(distance, name.lexeme);

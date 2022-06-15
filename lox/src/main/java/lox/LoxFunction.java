@@ -34,6 +34,17 @@ public class LoxFunction implements LoxCallable {
     return null;
   }
 
+  /**
+   * we create an environment inside the method's original closure.
+   * we define `this` as a variable in that environment and bind it
+   * into the given instance.
+   */
+  public Object bind(LoxInstance loxInstance) {
+    Environment environment = new Environment(closure);
+    environment.define("this", loxInstance);
+    return new LoxFunction(declaration, environment);
+  }
+
   @Override
   public int arity() {
     return declaration.params.size();
@@ -43,4 +54,5 @@ public class LoxFunction implements LoxCallable {
   public String toString() {
     return "<function " +declaration.name.lexeme + " >";
   }
+
 }
