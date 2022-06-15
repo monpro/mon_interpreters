@@ -149,6 +149,11 @@ public class Interpreter implements Expr.Visitor<Object>, Statement.Visitor<Void
     }
   }
 
+  @Override
+  public Object visitThisExpr(Expr.This expr) {
+    return null;
+  }
+
   private void checkNumberOperand(Token operator, Object leftOperand, Object rightOperand) {
     if (leftOperand instanceof Double && rightOperand instanceof Double) return;
     throw new RunTimeError(operator, "operands must be numbers");
