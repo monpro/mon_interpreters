@@ -1,5 +1,6 @@
 package lox;
 
+import javax.swing.plaf.nimbus.State;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -265,7 +266,12 @@ public class Interpreter implements Expr.Visitor<Object>, Statement.Visitor<Void
   @Override
   public Void visitClassStatement(Statement.Class statement) {
     environment.define(statement.name.lexeme, null);
-    LoxClass loxClass = new LoxClass(statement.name.lexeme);
+    Map<String, LoxFunction> methods = new HashMap<>();
+    for (Statement.Function method : statement.methods) {
+      LoxFunction loxFunction = new LoxFunction(method, environment);
+      methods.put(method.name.lexeme, loxFunction);
+    }
+    LoxClass loxClass = new LoxClass(statement.name.lexeme, methods);
     environment.assign(statement.name, loxClass);
     return null;
   }

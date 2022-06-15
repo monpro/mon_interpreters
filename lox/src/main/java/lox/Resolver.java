@@ -199,6 +199,10 @@ public class Resolver implements Expr.Visitor<Void>, Statement.Visitor<Void> {
   public Void visitClassStatement(Statement.Class statement) {
     declare(statement.name);
     define(statement.name);
+    for (Statement.Function method : statement.methods) {
+      FunctionType functionType = FunctionType.METHOD;
+      resolveFunction(method, functionType);
+    }
     return null;
   }
 
