@@ -3,5 +3,6 @@ package lox;
 public enum FunctionType {
   NONE,
   FUNCTION,
-  METHOD
+  METHOD,
+  INITIALIZER
 }

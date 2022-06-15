@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import static lox.FunctionType.INITIALIZER;
+
 public class Resolver implements Expr.Visitor<Void>, Statement.Visitor<Void> {
 
   private final Interpreter interpreter;
@@ -217,6 +219,9 @@ public class Resolver implements Expr.Visitor<Void>, Statement.Visitor<Void> {
     scopes.peek().put("this", true);
     for (Statement.Function method : statement.methods) {
       FunctionType functionType = FunctionType.METHOD;
+      if (method.name.lexeme.equals("init")) {
+        functionType = INITIALIZER;
+      }
       resolveFunction(method, functionType);
     }
     endScope();
@@ -247,6 +252,9 @@ public class Resolver implements Expr.Visitor<Void>, Statement.Visitor<Void> {
       Lox.error(statement.keyword, "Cannot return from top-level");
     }
     if (statement.value != null) {
+      if (currentFunctionType == FunctionType.INITIALIZER) {
+        Lox.error(statement.keyword, "cannot return value from an initializer.");
+      }
       resolve(statement.value);
     }
     return null;

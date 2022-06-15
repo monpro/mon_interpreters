@@ -31,6 +31,9 @@ public class LoxFunction implements LoxCallable {
     try {
       interpreter.executeBlock(declaration.body, environment);
     } catch (Return returnValue) {
+      if (isInit) {
+        return closure.getAt(0, "this");
+      }
       return returnValue.value;
     }
     if (isInit) {
