@@ -12,10 +12,12 @@ public class LoxFunction implements LoxCallable {
   private final Statement.Function declaration;
   // Store the function when it's declared instead of its being called.
   private final Environment closure;
+  private final Boolean isInit;
 
-  public LoxFunction(Statement.Function declaration, Environment closure) {
+  public LoxFunction(Statement.Function declaration, Environment closure, Boolean isInit) {
     this.declaration = declaration;
     this.closure = closure;
+    this.isInit = isInit;
   }
 
   @Override
@@ -31,6 +33,9 @@ public class LoxFunction implements LoxCallable {
     } catch (Return returnValue) {
       return returnValue.value;
     }
+    if (isInit) {
+      return closure.getAt(0, "this");
+    }
     return null;
   }
 
@@ -39,10 +44,10 @@ public class LoxFunction implements LoxCallable {
    * we define `this` as a variable in that environment and bind it
    * into the given instance.
    */
-  public Object bind(LoxInstance loxInstance) {
+  public LoxFunction bind(LoxInstance loxInstance) {
     Environment environment = new Environment(closure);
     environment.define("this", loxInstance);
-    return new LoxFunction(declaration, environment);
+    return new LoxFunction(declaration, environment, isInit);
   }
 
   @Override
