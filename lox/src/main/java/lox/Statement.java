@@ -82,8 +82,9 @@ abstract class Statement {
   }
 
   static class Class extends Statement {
-    Class(Token name, List<Statement.Function> methods) {
+    Class(Token name, Expr.Variable superclass, List<Statement.Function> methods) {
       this.name = name;
+      this.superclass = superclass;
       this.methods = methods;
     }
 
@@ -92,6 +93,7 @@ abstract class Statement {
       return visitor.visitClassStatement(this);
     }
   final Token name;
+  final Expr.Variable superclass;
   final List<Statement.Function> methods;
   }
 

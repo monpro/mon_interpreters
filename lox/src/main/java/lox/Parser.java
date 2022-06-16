@@ -36,13 +36,18 @@ public class Parser {
 
   private Statement classDeclaration() {
     Token name = consume(IDENTIFIER, "Expect class name");
+    Expr.Variable superclass = null;
+    if (match(LESS)) {
+      consume(IDENTIFIER, "Expect superclass name");
+      superclass = new Expr.Variable(previous());
+    }
     consume(LEFT_BRACE, "Expect '{' before class body.");
     List<Statement.Function> methods = new ArrayList<>();
     while (!check(RIGHT_BRACE) && !isAtEnd()) {
       methods.add(function("method"));
     }
     consume(RIGHT_BRACE, "Expect '}' after class body");
-    return new Statement.Class(name, methods);
+    return new Statement.Class(name, superclass, methods);
   }
 
   private Statement.Function function(String type) {
