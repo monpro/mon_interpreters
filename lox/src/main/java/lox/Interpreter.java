@@ -270,13 +270,20 @@ public class Interpreter implements Expr.Visitor<Object>, Statement.Visitor<Void
 
   @Override
   public Void visitClassStatement(Statement.Class statement) {
+    Object superclass = null;
+    if (statement.superclass != null) {
+      superclass = evaluate(statement.superclass);
+      if (!(superclass instanceof LoxClass)) {
+        throw new RunTimeError(statement.superclass.name, "Superclass must be a class");
+      }
+    }
     environment.define(statement.name.lexeme, null);
     Map<String, LoxFunction> methods = new HashMap<>();
     for (Statement.Function method : statement.methods) {
       LoxFunction loxFunction = new LoxFunction(method, environment, method.name.lexeme.equals("init"));
       methods.put(method.name.lexeme, loxFunction);
     }
-    LoxClass loxClass = new LoxClass(statement.name.lexeme, methods);
+    LoxClass loxClass = new LoxClass(statement.name.lexeme, (LoxClass) superclass, methods);
     environment.assign(statement.name, loxClass);
     return null;
   }
