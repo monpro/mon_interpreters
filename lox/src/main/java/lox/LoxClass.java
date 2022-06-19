@@ -42,6 +42,9 @@ public class LoxClass implements LoxCallable {
     if (methods.containsKey(lexeme)) {
       return methods.get(lexeme);
     }
+    if (superclass != null) {
+      return superclass.findMethod(lexeme);
+    }
     return null;
   }
 }
