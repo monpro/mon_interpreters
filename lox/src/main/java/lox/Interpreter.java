@@ -155,7 +155,14 @@ public class Interpreter implements Expr.Visitor<Object>, Statement.Visitor<Void
 
   @Override
   public Object visitSuperExpr(Expr.Super expr) {
-    return null;
+    int distance = locals.get(expr);
+    LoxClass superclass = (LoxClass) environment.getAt(distance, "super");
+    LoxInstance object = (LoxInstance) environment.getAt(distance - 1, "this");
+    LoxFunction method = superclass.findMethod(expr.method.lexeme);
+    if (method == null) {
+      throw new RunTimeError(expr.method, "Undefined property '" + expr.method.lexeme + "'.");
+    }
+    return method.bind(object);
   }
 
   private void checkNumberOperand(Token operator, Object leftOperand, Object rightOperand) {
@@ -282,12 +289,19 @@ public class Interpreter implements Expr.Visitor<Object>, Statement.Visitor<Void
       }
     }
     environment.define(statement.name.lexeme, null);
+    if (statement.superclass != null) {
+      environment = new Environment(environment);
+      environment.define("super", superclass);
+    }
     Map<String, LoxFunction> methods = new HashMap<>();
     for (Statement.Function method : statement.methods) {
       LoxFunction loxFunction = new LoxFunction(method, environment, method.name.lexeme.equals("init"));
       methods.put(method.name.lexeme, loxFunction);
     }
     LoxClass loxClass = new LoxClass(statement.name.lexeme, (LoxClass) superclass, methods);
+    if (superclass != null) {
+      environment = environment.enclosing;
+    }
     environment.assign(statement.name, loxClass);
     return null;
   }
