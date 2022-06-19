@@ -1,6 +1,5 @@
 package lox;
 
-import javax.swing.plaf.nimbus.State;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -152,6 +151,11 @@ public class Interpreter implements Expr.Visitor<Object>, Statement.Visitor<Void
   @Override
   public Object visitThisExpr(Expr.This expr) {
     return lookUpVariable(expr.keyword, expr);
+  }
+
+  @Override
+  public Object visitSuperExpr(Expr.Super expr) {
+    return null;
   }
 
   private void checkNumberOperand(Token operator, Object leftOperand, Object rightOperand) {
