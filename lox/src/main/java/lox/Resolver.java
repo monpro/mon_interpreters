@@ -82,6 +82,12 @@ public class Resolver implements Expr.Visitor<Void>, Statement.Visitor<Void> {
 
   @Override
   public Void visitSuperExpr(Expr.Super expr) {
+    if (currentClassType == ClassType.NONE) {
+      Lox.error(expr.keyword, "Can't use 'super' outside of a class");
+    }
+    else if (currentClassType != ClassType.SUBCLASS) {
+      Lox.error(expr.keyword, "Can't use 'super' in a class wih no superclass");
+    }
     resolveLocal(expr, expr.keyword);
     return null;
   }
@@ -223,6 +229,10 @@ public class Resolver implements Expr.Visitor<Void>, Statement.Visitor<Void> {
     define(statement.name);
     if (statement.superclass != null && statement.name.lexeme.equals(statement.superclass.name.lexeme)) {
        Lox.error(statement.superclass.name, "A class cannot inherit from itself.");
+    }
+    if (statement.superclass != null) {
+      currentClassType = ClassType.SUBCLASS;
+      resolve(statement.superclass);
     }
     if (statement.superclass != null) {
       beginScope();
